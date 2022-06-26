@@ -1,0 +1,5 @@
+[Desktop Entry]
+Exec=/home/pi/cryptoticker/launchct.sh
+Name=CryptoTicker
+Path=/home/pi/cryptoticker
+Type=Application

@@ -1,0 +1,13 @@
+display:
+  cycle: true
+  inverted: false
+  orientation: 90
+  trendingmode: false
+  showvolume: false
+  showrank: false
+ticker:
+  currency: bitcoin,ethereum,dogecoin
+  exchange: default
+  fiatcurrency: usd,eur,gbp
+  sparklinedays: 1
+  updatefrequency: 180
