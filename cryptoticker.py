@@ -35,22 +35,24 @@ CONFIG_FILE = os.path.join(os.path.DIR_NAME(os.path.realpath(__file__)),'config.
 FONT_DATE = ImageFont.truetype(os.path.join(FONT_DIR,'PixelSplitter-Bold.ttf'),11)
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
-def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-Regular", fill=0):
-  '''
+def _place_text(image, text, x_offset=0, y_offset=0, font_size=40, fontstring="Forum-Regular", fill=0):
+  """
   Put some centered text at a location on the image.
-  '''
-  draw = ImageDraw.Draw(img)
+  """
+  draw = ImageDraw.Draw(image)
+
   try:
-    filename = os.path.join(DIR_NAME, './fonts/googlefonts/'+fontstring+'.ttf')
-    font = ImageFont.truetype(filename, fontsize)
+    file_name = os.path.join(DIR_NAME, './fonts/googlefonts/' + fontstring + '.ttf')
+    font = ImageFont.truetype(file_name, font_size)
   except OSError:
-    font = ImageFont.truetype('/usr/share/fonts/TTF/DejaVuSans.ttf', fontsize)
-  img_width, img_height = img.size
+    font = ImageFont.truetype('/usr/share/fonts/TTF/DejaVuSans.ttf', font_size)
+
+  image_width, image_height = image.size
   text_width, _ = font.getsize(text)
-  text_height = fontsize
-  draw_x = (img_width - text_width)//2 + x_offset
-  draw_y = (img_height - text_height)//2 + y_offset
-  draw.text((draw_x, draw_y), text, font=font,fill=fill )
+  text_height = font_size
+  draw_x = (image_width - text_width) // 2 + x_offset
+  draw_y = (image_height - text_height) // 2 + y_offset
+  draw.text((draw_x, draw_y), text, font = font, fill = fill)
 
 def beanaproblem(message):
   # A visual cue that the wheels have fallen off
@@ -68,11 +70,11 @@ def currencystringtolist(currstring):
   curr_list = [x.strip(' ') for x in curr_list]
   return curr_list
 
-def display_image(img):
+def display_image(image):
   global app
   global center_image
   center_image.destroy()
-  center_image = Picture(app, image=img, grid=[0,1,2,1])
+  center_image = Picture(app, image=image, grid=[0,1,2,1])
 
 def fullupdate(config,lastcoinfetch):
   """  
