@@ -1,21 +1,33 @@
 #!/usr/bin/env python3
-from PIL import Image, ImageOps
-from PIL import ImageFont
-from PIL import ImageDraw
-import currency
-import os
-import sys
 import logging
+import json
+import os
+import socket
+import sys
+import textwrap
 import time
+import urllib
+
+import currency
 import requests
-import urllib, json
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
-import yaml 
-import socket
-import textwrap
-from guizero import App, Picture, Text, Combo, PushButton
+import yaml
+from guizero import (
+    App,
+    Combo,
+    Picture,
+    PushButton,
+    Text,
+)
+from PIL import (
+    Image,
+    ImageDraw,
+    ImageFont,
+    ImageOps,
+)
+
 dirname = os.path.dirname(__file__)
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
