@@ -28,12 +28,12 @@ from PIL import (
     ImageOps,
 )
 
-dirname = os.path.dirname(__file__)
-picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
-fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
-configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
-font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
-headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+DIR_NAME = os.path.DIR_NAME(__file__)
+PIC_DIR = os.path.join(os.path.DIR_NAME(os.path.realpath(__file__)), 'images')
+FONT_DIR = os.path.join(os.path.DIR_NAME(os.path.realpath(__file__)), 'fonts/googlefonts')
+CONFIG_FILE = os.path.join(os.path.DIR_NAME(os.path.realpath(__file__)),'config.yaml')
+FONT_DATE = ImageFont.truetype(os.path.join(FONT_DIR,'PixelSplitter-Bold.ttf'),11)
+HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-Regular", fill=0):
   '''
@@ -41,7 +41,7 @@ def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-
   '''
   draw = ImageDraw.Draw(img)
   try:
-    filename = os.path.join(dirname, './fonts/googlefonts/'+fontstring+'.ttf')
+    filename = os.path.join(DIR_NAME, './fonts/googlefonts/'+fontstring+'.ttf')
     font = ImageFont.truetype(filename, fontsize)
   except OSError:
     font = ImageFont.truetype('/usr/share/fonts/TTF/DejaVuSans.ttf', fontsize)
@@ -54,11 +54,11 @@ def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-
 
 def beanaproblem(message):
   # A visual cue that the wheels have fallen off
-  thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
+  thebean = Image.open(os.path.join(PIC_DIR,'thebean.bmp'))
   image = Image.new('L', (264, 176), 255)    # 255: clear the image with white
   draw = ImageDraw.Draw(image)
   image.paste(thebean, (60,45))
-  draw.text((95,15),str(time.strftime("%-H:%M %p, %-d %b %Y")),font=font_date,fill=0)
+  draw.text((95,15),str(time.strftime("%-H:%M %p, %-d %b %Y")),font=FONT_DATE,fill=0)
   writewrappedlines(image, "Issue: "+message)
   return image
 
@@ -192,7 +192,7 @@ def getData(config,other,crypto,fiat):
 
 def getgecko(url):
   try:
-    geckojson=requests.get(url, headers=headers).json()
+    geckojson=requests.get(url, HEADERS=HEADERS).json()
     connectfail=False
   except requests.exceptions.RequestException as e:
     logging.info("Issue with CoinGecko")
@@ -241,9 +241,9 @@ def makeSpark(pricestack):
   ax.set_yticks([])
   ax.axhline(c='k', linewidth=4, linestyle=(0, (5, 2, 1, 2)))
   # Save the resulting bmp file to the images directory
-  plt.savefig(os.path.join(picdir,'spark.png'), dpi=17)
-  #imgspk = Image.open(os.path.join(picdir,'spark.png'))
-  #file_out = os.path.join(picdir,'spark.bmp')
+  plt.savefig(os.path.join(PIC_DIR,'spark.png'), dpi=17)
+  #imgspk = Image.open(os.path.join(PIC_DIR,'spark.png'))
+  #file_out = os.path.join(PIC_DIR,'spark.bmp')
   #imgspk.save(file_out) 
   plt.clf() # Close plot to prevent memory error
   ax.cla() # Close axis to prevent memory error
@@ -263,7 +263,7 @@ def updateDisplay(config,pricestack,other,crypto,fiat):
   if config is re-written following adustment we could avoid passing the last two arguments as
   they will just be the first two items of their string in config
   """
-  with open(configfile) as f:
+  with open(CONFIG_FILE) as f:
     originalconfig = yaml.load(f, Loader=yaml.FullLoader)
   originalcoin=originalconfig['ticker']['currency']
   originalcoin_list = originalcoin.split(",")
@@ -278,9 +278,9 @@ def updateDisplay(config,pricestack,other,crypto,fiat):
     currencythumbnail= 'currency/'+whichcoin+'INV.bmp'
   else:
     currencythumbnail= 'currency/'+whichcoin+'.bmp'
-  tokenfilename = os.path.join(picdir,currencythumbnail)
-  sparkpng = Image.open(os.path.join(picdir,'spark.png'))
-  ATHbitmap= Image.open(os.path.join(picdir,'ATH.bmp'))
+  tokenfilename = os.path.join(PIC_DIR,currencythumbnail)
+  sparkpng = Image.open(os.path.join(PIC_DIR,'spark.png'))
+  ATHbitmap= Image.open(os.path.join(PIC_DIR,'ATH.bmp'))
 # Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
   if os.path.isfile(tokenfilename):
     logging.info("Getting token Image from Image directory")
@@ -288,8 +288,8 @@ def updateDisplay(config,pricestack,other,crypto,fiat):
   else:
     logging.info("Getting token Image from Coingecko")
     tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
-    rawimage = requests.get(tokenimageurl, headers=headers).json()
-    tokenimage = Image.open(requests.get(rawimage['image']['large'], headers = headers, stream=True).raw).convert("RGBA")
+    rawimage = requests.get(tokenimageurl, HEADERS=HEADERS).json()
+    tokenimage = Image.open(requests.get(rawimage['image']['large'], HEADERS = HEADERS, stream=True).raw).convert("RGBA")
     resize = 100,100
     tokenimage.thumbnail(resize, Image.ANTIALIAS)
     # If inverted is true, invert the token symbol before placing if on the white BG so that it is uninverted at the end - this will make things more 
@@ -316,10 +316,10 @@ def updateDisplay(config,pricestack,other,crypto,fiat):
   if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
     image = Image.new('L', (176,264), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)              
-    draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
-    draw.text((110,95),pricechange,font =font_date,fill = 0)
+    draw.text((110,80),str(days_ago)+"day :",font =FONT_DATE,fill = 0)
+    draw.text((110,95),pricechange,font =FONT_DATE,fill = 0)
     writewrappedlines(image, symbolstring+pricenowstring,40,65,8,10,"Roboto-Medium" )
-    draw.text((10,10),str(time.strftime("%-I:%M %p, s%d %b %Y")),font =font_date,fill = 0)
+    draw.text((10,10),str(time.strftime("%-I:%M %p, s%d %b %Y")),font =FONT_DATE,fill = 0)
     image.paste(tokenimage, (10,25))
     image.paste(sparkpng,(10,125))
     if config['display']['orientation'] == 180 :
@@ -329,19 +329,19 @@ def updateDisplay(config,pricestack,other,crypto,fiat):
     draw = ImageDraw.Draw(image) 
     if other['ATH']==True:
       image.paste(ATHbitmap,(190,85))  
-    draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
+    draw.text((110,90),str(days_ago)+" day : "+pricechange,font =FONT_DATE,fill = 0)
     if 'showvolume' in config['display'] and config['display']['showvolume']:
-      draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
+      draw.text((110,105),"24h vol : " + human_format(other['volume']),font =FONT_DATE,fill = 0)
     writewrappedlines(image, symbolstring+pricenowstring,50,55,8,10,"Roboto-Medium" )
     image.paste(sparkpng,(80,40))
     image.paste(tokenimage, (0,10))
     # Don't show rank for #1 coin, #1 doesn't need to show off                  
     if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 1:
-      draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
+      draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =FONT_DATE,fill = 0)
     if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
-      draw.text((95,28),whichcoin,font =font_date,fill = 0)
-#   draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-    draw.text((95,15),str(time.strftime("%-I:%M %p, %d %b %Y")),font =font_date,fill = 0)
+      draw.text((95,28),whichcoin,font =FONT_DATE,fill = 0)
+#   draw.text((5,110),"In retrospect, it was inevitable",font =FONT_DATE,fill = 0)
+    draw.text((95,15),str(time.strftime("%-I:%M %p, %d %b %Y")),font =FONT_DATE,fill = 0)
     if config['display']['orientation'] == 270 :
       image=image.rotate(180, expand=True)
 #   This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
@@ -365,7 +365,7 @@ app = App(title="CryptoCurrency Ticker", layout="grid")
 app.set_full_screen()
 
 logging.info("Starting ticker...")
-with open(configfile) as f:
+with open(CONFIG_FILE) as f:
   config = yaml.load(f, Loader=yaml.FullLoader)
 logging.info(config)
 staticcoins = config['ticker']['currency']
@@ -375,7 +375,7 @@ howmanycoins = len(config['ticker']['currency'].split(','))
 
 startimg = Image.new('L', (264, 176), 255)
 startdraw = ImageDraw.Draw(startimg)
-startdraw.text((95, 15), "Starting up...", font=font_date, fill=0)
+startdraw.text((95, 15), "Starting up...", font=FONT_DATE, fill=0)
 
 lastcoinfetch = time.time()
 
